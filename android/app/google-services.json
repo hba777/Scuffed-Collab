@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "984077676256",
+    "project_id": "scuffed-collab",
+    "storage_bucket": "scuffed-collab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:984077676256:android:1aa1a41f5f712c17ecea85",
+        "android_client_info": {
+          "package_name": "com.example.scuffed_collab"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBl-hKh0ylow5AXVgfTgZdSvmbO0aiIfg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

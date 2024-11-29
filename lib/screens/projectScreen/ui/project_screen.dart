@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -341,7 +339,7 @@ void _showDeleteConfirmationDialog(BuildContext parentContext, Projects project,
       return AlertDialog(
         backgroundColor: Colors.grey[900],
         title: const Text(
-          'Delete Task',
+          'Delete Project',
           style: TextStyle(color: Colors.white),
         ),
         content: Text.rich(

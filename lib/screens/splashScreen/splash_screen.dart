@@ -58,7 +58,8 @@ class _SplashScreenState extends State<SplashScreen> {
           Positioned(
               bottom: mq.height * .15,
               width: mq.width * 1,
-              child: const Text('Scuffed Collab',
+              child:
+              const Text('Scuffed Collab',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 32,
