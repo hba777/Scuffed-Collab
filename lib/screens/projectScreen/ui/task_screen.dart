@@ -24,11 +24,11 @@ class TaskScreen extends StatelessWidget {
       buildWhen: (previous, current) => current is! ProjectDetailsActionState,
       listener: (context, state) {
         // TODO: implement listener
-        if (state is TaskStatusUpdatedNavBackBtnState){
+        if (state is TaskStatusUpdatedNavBackBtnState) {
           Navigator.pop(context);
-        } else if (state is ProjectDetailsErrorState){
+        } else if (state is ProjectDetailsErrorState) {
           Dialogs.showSnackBar(context, state.error);
-        } else if (state is TaskDeleteBtnNavState){
+        } else if (state is TaskDeleteBtnNavState) {
           Navigator.pop(context);
         }
       },
@@ -37,11 +37,15 @@ class TaskScreen extends StatelessWidget {
           appBar: AppBar(
             leading: IconButton(
               onPressed: () {
-               context.read<ProjectDetailsBloc>().add(TaskScreenStatusChangedEvent(projectId: project.id,
-                   taskId: task.id, status: status));
-               //Reinitialize previous screen
-               context.read<ProjectDetailsBloc>().add(ProjectDetailsInitialEvent(project: project ));
-
+                context.read<ProjectDetailsBloc>().add(
+                    TaskScreenStatusChangedEvent(
+                        projectId: project.id,
+                        taskId: task.id,
+                        status: status));
+                //Reinitialize previous screen
+                context
+                    .read<ProjectDetailsBloc>()
+                    .add(ProjectDetailsInitialEvent(project: project));
               },
               icon: Icon(
                 Icons.arrow_back_ios_new_rounded,
@@ -93,8 +97,9 @@ class TaskScreen extends StatelessWidget {
                 Text(
                   'Status',
                   style: TextStyle(
-                    fontSize: mq.width *.045,
-                      fontWeight: FontWeight.bold, color: Colors.white),
+                      fontSize: mq.width * .045,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
 
                 SizedBox(height: mq.height * .015),
@@ -110,13 +115,13 @@ class TaskScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(mq.width * .04),
                           color: const Color(0xFF3c3c3c)),
                       child: DropdownButton<String>(
-                        underline: SizedBox.shrink(),
+                        underline: const SizedBox.shrink(),
                         style: TextStyle(
                           fontSize: mq.width * .04,
                           color: Colors.white,
                         ),
                         padding:
-                        EdgeInsets.symmetric(horizontal: mq.width * .04),
+                            EdgeInsets.symmetric(horizontal: mq.width * .04),
                         value: status, // Default value
                         isExpanded: true,
                         icon: Transform.rotate(
@@ -124,7 +129,7 @@ class TaskScreen extends StatelessWidget {
                             child: Icon(
                               Icons.arrow_back_ios_new_rounded,
                               color: Colors.greenAccent,
-                              size: mq.width *.055,
+                              size: mq.width * .055,
                             )),
                         items: const [
                           DropdownMenuItem(
@@ -141,7 +146,7 @@ class TaskScreen extends StatelessWidget {
                           ),
                         ],
                         dropdownColor:
-                        const Color(0xFF3c3c3c), // Match dropdown color
+                            const Color(0xFF3c3c3c), // Match dropdown color
                         onChanged: (String? newStatus) {
                           // Handle status change if needed
                           status = newStatus!;
@@ -206,16 +211,16 @@ class TaskScreen extends StatelessWidget {
               onPressed: () {
                 // Use parentContext instead of dialogContext here
                 parentContext.read<ProjectDetailsBloc>().add(
-                  TaskDeleteBtnEvent(
-                    projectId: project.id,
-                    taskId: task.id,
-                  ),
-                );
+                      TaskDeleteBtnEvent(
+                        projectId: project.id,
+                        taskId: task.id,
+                      ),
+                    );
 
                 // Reinitialize previous screen
                 parentContext.read<ProjectDetailsBloc>().add(
-                  ProjectDetailsInitialEvent(project: project),
-                );
+                      ProjectDetailsInitialEvent(project: project),
+                    );
 
                 Navigator.of(dialogContext).pop(); // Close the dialog
               },

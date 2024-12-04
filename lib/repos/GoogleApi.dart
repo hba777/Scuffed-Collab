@@ -4,10 +4,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import 'FirebaseApi.dart';
-
-class GoogleApi{
-
+class GoogleApi {
   Future<UserCredential?> signInWithGoogle() async {
     try {
       await InternetAddress.lookup("google.com");
@@ -16,7 +13,7 @@ class GoogleApi{
 
       // Obtain the auth details from the request
       final GoogleSignInAuthentication? googleAuth =
-      await googleUser?.authentication;
+          await googleUser?.authentication;
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -34,13 +31,12 @@ class GoogleApi{
   }
 
   Future<GoogleSignInAccount?> signOutGoogle() async {
-    try{
+    try {
       await GoogleSignIn().signOut();
       log('Logged Out from Google');
-    }catch (e) {
+    } catch (e) {
       log(e.toString());
     }
     return null;
   }
-
 }

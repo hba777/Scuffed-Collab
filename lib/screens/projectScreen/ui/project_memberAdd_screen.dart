@@ -1,12 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_collab/screens/projectScreen/projectBloc/project_details_bloc.dart';
 import '../../../helper/dailogs.dart';
 import '../../../main.dart';
 import '../../../models/ProjectsModel.dart';
-import '../../../models/TeamModel.dart';
 import '../../../widgets/TextFieldWidget.dart';
 
 class TeamMemberAddScreen extends StatelessWidget {
@@ -36,7 +33,7 @@ class TeamMemberAddScreen extends StatelessWidget {
       },
       builder: (context, state) {
         return GestureDetector(
-          onTap: (){
+          onTap: () {
             FocusScope.of(context).unfocus();
           },
           child: Scaffold(
@@ -46,8 +43,8 @@ class TeamMemberAddScreen extends StatelessWidget {
                 onPressed: () {
                   // Reinitialize previous screen
                   context.read<ProjectDetailsBloc>().add(
-                    ProjectDetailsInitialEvent(project: project),
-                  );
+                        ProjectDetailsInitialEvent(project: project),
+                      );
                   Navigator.pop(context);
                 },
                 icon: Icon(
@@ -64,7 +61,8 @@ class TeamMemberAddScreen extends StatelessWidget {
             floatingActionButton: Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: EdgeInsets.only(left: mq.width * .08, bottom: mq.height * .03),
+                padding: EdgeInsets.only(
+                    left: mq.width * .08, bottom: mq.height * .03),
                 child: SizedBox(
                   width: mq.width * .6,
                   child: FloatingActionButton(
@@ -75,13 +73,15 @@ class TeamMemberAddScreen extends StatelessWidget {
                     onPressed: () {
                       // Add Project Member
                       final email = emailController.text;
-                      context.read<ProjectDetailsBloc>().add(ProjectDetailsMemberAddedEvent(
-                          project:project ,email: email));
+                      context.read<ProjectDetailsBloc>().add(
+                          ProjectDetailsMemberAddedEvent(
+                              project: project, email: email));
                       emailController.clear();
                     },
                     child: Text(
                       'Add Member',
-                      style: TextStyle(color: Colors.greenAccent, fontSize: mq.width * .045),
+                      style: TextStyle(
+                          color: Colors.greenAccent, fontSize: mq.width * .045),
                     ),
                   ),
                 ),
@@ -93,7 +93,8 @@ class TeamMemberAddScreen extends StatelessWidget {
                 SizedBox(height: mq.height * .04),
                 Center(
                   child: RoundedTextField(
-                    padding: EdgeInsets.symmetric(horizontal: mq.width * .05, vertical: mq.height * .014),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: mq.width * .05, vertical: mq.height * .014),
                     fillColor: const Color(0xFF3c3c3c),
                     borderColor: const Color(0xFF1e1e1e),
                     width: mq.width * .8,
@@ -109,5 +110,4 @@ class TeamMemberAddScreen extends StatelessWidget {
       },
     );
   }
-
 }

@@ -32,25 +32,25 @@ class LoginScreenState extends State<LoginScreen> {
     return BlocConsumer<LoginBloc, LoginState>(
       bloc: loginBloc,
       listenWhen: (previous, current) => current is LoginActionState,
-      buildWhen: (previous, current) => current is !LoginActionState,
-  listener: (context, state) {
-    // TODO: implement listener
+      buildWhen: (previous, current) => current is! LoginActionState,
+      listener: (context, state) {
+        // TODO: implement listener
 
-    if (state is LoginUserExistsState) {
-      Navigator.pop(context);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)
-      => const HomeScreen()));
-    } else if (state is LoginCreateUserState) {
-      Navigator.pop(context);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)
-      => const HomeScreen()));
-    } else if (state is LoginErrorState) {
-      Navigator.pop(context);
-      Dialogs.showSnackBar(context, state.error);
-    }
-  },
-  builder: (context, state) {
-        switch(state.runtimeType) {
+        if (state is LoginUserExistsState) {
+          Navigator.pop(context);
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+        } else if (state is LoginCreateUserState) {
+          Navigator.pop(context);
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+        } else if (state is LoginErrorState) {
+          Navigator.pop(context);
+          Dialogs.showSnackBar(context, state.error);
+        }
+      },
+      builder: (context, state) {
+        switch (state.runtimeType) {
           case LoginSuccessState:
             final successState = state as LoginSuccessState;
             bool isLoading = state is LoginLoadingState;
@@ -61,9 +61,7 @@ class LoginScreenState extends State<LoginScreen> {
                 title: const Text(
                   "Scuffed Collab",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white
-                  ),
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
               body: Stack(
@@ -73,7 +71,10 @@ class LoginScreenState extends State<LoginScreen> {
                       top: mq.height * .15,
                       left: _isAnimate ? mq.width * .245 : -mq.width * .5,
                       width: mq.width * .5,
-                      child: Image.asset('assets/images/Headphone.png',color: Colors.white,)),
+                      child: Image.asset(
+                        'assets/images/Headphone.png',
+                        color: Colors.white,
+                      )),
                   Positioned(
                       bottom: mq.height * .07,
                       left: mq.width * .15,
@@ -84,29 +85,32 @@ class LoginScreenState extends State<LoginScreen> {
                               backgroundColor: Colors.green[300],
                               shape: const StadiumBorder(),
                               elevation: 1),
-                          onPressed: isLoading ? null : () {
-                            loginBloc.add(LoginButtonActionEvent());
-                            Dialogs.showProgressBar(context);
-                          },
-                          icon:
-                          Image.asset('assets/images/google.png', height: mq.height * .03),
+                          onPressed: isLoading
+                              ? null
+                              : () {
+                                  loginBloc.add(LoginButtonActionEvent());
+                                  Dialogs.showProgressBar(context);
+                                },
+                          icon: Image.asset('assets/images/google.png',
+                              height: mq.height * .03),
                           label: RichText(
                               text: const TextSpan(
-                                  style: TextStyle(color: Colors.white, fontSize: 16),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
                                   children: [
-                                    TextSpan(text: 'Sign In With'),
-                                    TextSpan(
-                                        text: ' Google',
-                                        style: TextStyle(fontWeight: FontWeight.bold))
-                                  ]))))
+                                TextSpan(text: 'Sign In With'),
+                                TextSpan(
+                                    text: ' Google',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold))
+                              ]))))
                 ],
               ),
             );
           default:
-            return SizedBox();
+            return const SizedBox();
         }
-
-  },
-);
+      },
+    );
   }
 }

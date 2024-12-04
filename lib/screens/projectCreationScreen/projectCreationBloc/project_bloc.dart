@@ -4,9 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:scuffed_collab/models/TeamModel.dart';
 import 'package:scuffed_collab/repos/FirebaseApi.dart';
-import 'package:scuffed_collab/screens/profileScreen/profileBloc/profile_bloc.dart';
-
-import '../../../models/ProjectsModel.dart';
 
 part 'project_event.dart';
 part 'project_state.dart';
@@ -16,7 +13,8 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     on<ProjectInitialEvent>(projectInitialEvent);
     on<ProjectDetailsSubmittedEvent>(projectDetailsSubmitted);
     on<ProjectMemberAddedEvent>(projectMemberAdded);
-    on<ProjectIncompleteDetailsSubmittedEvent>(projectIncompleteDetailsSubmittedEvent);
+    on<ProjectIncompleteDetailsSubmittedEvent>(
+        projectIncompleteDetailsSubmittedEvent);
     on<ProjectDeadlineSelectedEvent>(projectDeadlineSelectedEvent);
     on<ProjectCreateButtonEvent>(projectCreateButtonEvent);
     on<ProjectTitleChangedEvent>(projectTitleChanged);
@@ -30,7 +28,8 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
   String description = '';
 
   //Project Details Event
-  FutureOr<void> projectDetailsSubmitted(ProjectDetailsSubmittedEvent event, Emitter<ProjectState> emit) async {
+  FutureOr<void> projectDetailsSubmitted(
+      ProjectDetailsSubmittedEvent event, Emitter<ProjectState> emit) async {
     emit(ProjectSubmittingState());
     try {
       // Here you would normally save the project to Firebase
@@ -40,26 +39,31 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
           title: event.title,
           deadline: event.deadline,
           description: event.description));
-
     } catch (e) {
       emit(ProjectErrorState(e.toString()));
     }
   }
 
-  FutureOr<void> projectInitialEvent(ProjectInitialEvent event, Emitter<ProjectState> emit) {
+  FutureOr<void> projectInitialEvent(
+      ProjectInitialEvent event, Emitter<ProjectState> emit) {
     emit(ProjectSuccessState());
   }
 
-  FutureOr<void> projectIncompleteDetailsSubmittedEvent(ProjectIncompleteDetailsSubmittedEvent event, Emitter<ProjectState> emit) {
-    emit(ProjectIncompleteDetailsSubmittedState(message: 'Please fill out all fields'));
+  FutureOr<void> projectIncompleteDetailsSubmittedEvent(
+      ProjectIncompleteDetailsSubmittedEvent event,
+      Emitter<ProjectState> emit) {
+    emit(ProjectIncompleteDetailsSubmittedState(
+        message: 'Please fill out all fields'));
   }
 
-  FutureOr<void> projectDeadlineSelectedEvent(ProjectDeadlineSelectedEvent event, Emitter<ProjectState> emit) {
+  FutureOr<void> projectDeadlineSelectedEvent(
+      ProjectDeadlineSelectedEvent event, Emitter<ProjectState> emit) {
     emit(ProjectDeadlineSubmittedState(deadline: event.deadline));
     log('Deadline selected');
   }
 
-  FutureOr<void> projectMemberAdded(ProjectMemberAddedEvent event, Emitter<ProjectState> emit) async {
+  FutureOr<void> projectMemberAdded(
+      ProjectMemberAddedEvent event, Emitter<ProjectState> emit) async {
     try {
       TeamMember? member = await FirebaseApi.getTeamMemberByEmail(event.email);
 
@@ -76,14 +80,12 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     }
   }
 
-
-  FutureOr<void> projectCreateButtonEvent(ProjectCreateButtonEvent event, Emitter<ProjectState> emit) async {
+  FutureOr<void> projectCreateButtonEvent(
+      ProjectCreateButtonEvent event, Emitter<ProjectState> emit) async {
     try {
-      if(teamMembers.isNotEmpty) {
-        await FirebaseApi.createProject(event.title,
-            event.description,
-            event.deadline,
-            teamMembers);
+      if (teamMembers.isNotEmpty) {
+        await FirebaseApi.createProject(
+            event.title, event.description, event.deadline, teamMembers);
         emit(ProjectCreateButtonNavigationState());
       } else {
         emit(ProjectTeamEmptyState());
@@ -93,11 +95,13 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     }
   }
 
-  FutureOr<void> projectTitleChanged(ProjectTitleChangedEvent event, Emitter<ProjectState> emit) {
+  FutureOr<void> projectTitleChanged(
+      ProjectTitleChangedEvent event, Emitter<ProjectState> emit) {
     title = event.title;
   }
 
-  FutureOr<void> projectDescriptionChanged(ProjectDescriptionChangedEvent event, Emitter<ProjectState> emit) {
+  FutureOr<void> projectDescriptionChanged(
+      ProjectDescriptionChangedEvent event, Emitter<ProjectState> emit) {
     description = event.description;
   }
 }

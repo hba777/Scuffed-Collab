@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 import 'package:scuffed_collab/models/UserModel.dart';
@@ -23,11 +22,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileLogoutEvent>(profileLogoutEvent);
   }
 
-  FutureOr<void> profileInitialEvent(ProfileInitialEvent event, Emitter<ProfileState> emit) {
+  FutureOr<void> profileInitialEvent(
+      ProfileInitialEvent event, Emitter<ProfileState> emit) {
     emit(ProfileSuccessState());
   }
 
-  FutureOr<void> profileEditNameEvent(ProfileEditNameEvent event, Emitter<ProfileState> emit) async {
+  FutureOr<void> profileEditNameEvent(
+      ProfileEditNameEvent event, Emitter<ProfileState> emit) async {
     try {
       FirebaseApi.me.Name = event.newName;
       await FirebaseApi.updateUserInfo();
@@ -38,7 +39,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
-  FutureOr<void> profileEditAboutEvent(ProfileEditAboutEvent event, Emitter<ProfileState> emit) async {
+  FutureOr<void> profileEditAboutEvent(
+      ProfileEditAboutEvent event, Emitter<ProfileState> emit) async {
     try {
       FirebaseApi.me.About = event.newAbout;
       await FirebaseApi.updateUserInfo();
@@ -49,20 +51,21 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
-  FutureOr<void> profileEditGalleryPfpEvent(ProfileEditGalleryPfpEvent event, Emitter<ProfileState> emit) async {
+  FutureOr<void> profileEditGalleryPfpEvent(
+      ProfileEditGalleryPfpEvent event, Emitter<ProfileState> emit) async {
     // Handle profile picture update
     try {
       await FirebaseApi.updateProfilePicture(File(event.newPfp.path));
       log('PFP Updated');
       emit(ProfileUpdatePfPState());
       emit(ProfileUpdatePfpImageState(image: event.newPfp.path));
-    }
-    catch (e) {
+    } catch (e) {
       emit(ProfileErrorState(error: e.toString()));
     }
   }
 
-  FutureOr<void> profileLogoutEvent(ProfileLogoutEvent event, Emitter<ProfileState> emit) async {
+  FutureOr<void> profileLogoutEvent(
+      ProfileLogoutEvent event, Emitter<ProfileState> emit) async {
     try {
       // Updating Last Active Status when logged out
       await FirebaseApi.updateActiveStatus(false);

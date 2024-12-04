@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -24,11 +23,8 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return BlocProvider(
-      create: (context) =>
-      ProfileBloc()
-        ..add(ProfileInitialEvent(user: user)),
+      create: (context) => ProfileBloc()..add(ProfileInitialEvent(user: user)),
       child: BlocConsumer<ProfileBloc, ProfileState>(
         listenWhen: (previous, current) => current is ProfileActionState,
         buildWhen: (previous, current) => current is! ProfileActionState,
@@ -38,7 +34,7 @@ class ProfileScreen extends StatelessWidget {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  (Route<dynamic> route) => false,
+              (Route<dynamic> route) => false,
             );
           } else if (state is ProfileUpdatePfPState) {
             Dialogs.showSnackBar(context, 'Profile Updated Successfully');
@@ -56,7 +52,7 @@ class ProfileScreen extends StatelessWidget {
                   appBar: AppBar(
                     leading: IconButton(
                       onPressed: () {
-                        if(_image != null) {
+                        if (_image != null) {
                           homeBloc.add(HomeInitialEvent());
                         }
                         Navigator.pop(context);
@@ -107,7 +103,7 @@ class ProfileScreen extends StatelessWidget {
                             ),
                             BlocBuilder<ProfileBloc, ProfileState>(
                               builder: (context, state) {
-                                if(state is ProfileUpdatePfpImageState){
+                                if (state is ProfileUpdatePfpImageState) {
                                   _image = state.image;
                                 }
                                 return Stack(
@@ -115,32 +111,33 @@ class ProfileScreen extends StatelessWidget {
                                     //Profile Picture
                                     _image != null
                                         ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                          mq.height * .1),
-                                      child: Center(
-                                        child: Image.file(
-                                          //Import dartIO not html
-                                          File(_image!),
-                                          width: mq.height * .2,
-                                          height: mq.height * .2,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    )
+                                            borderRadius: BorderRadius.circular(
+                                                mq.height * .1),
+                                            child: Center(
+                                              child: Image.file(
+                                                //Import dartIO not html
+                                                File(_image!),
+                                                width: mq.height * .2,
+                                                height: mq.height * .2,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          )
                                         : ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                          mq.height * .1),
-                                      child: CachedNetworkImage(
-                                        width: mq.height * .2,
-                                        height: mq.height * .2,
-                                        fit: BoxFit.cover,
-                                        imageUrl: user.Image,
-                                        placeholder: (context, url) =>
-                                        const CircularProgressIndicator(),
-                                        errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
-                                      ),
-                                    ),
+                                            borderRadius: BorderRadius.circular(
+                                                mq.height * .1),
+                                            child: CachedNetworkImage(
+                                              width: mq.height * .2,
+                                              height: mq.height * .2,
+                                              fit: BoxFit.cover,
+                                              imageUrl: user.Image,
+                                              placeholder: (context, url) =>
+                                                  const CircularProgressIndicator(),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      const Icon(Icons.error),
+                                            ),
+                                          ),
                                     Positioned(
                                       bottom: 0,
                                       right: 0,
@@ -195,7 +192,7 @@ class ProfileScreen extends StatelessWidget {
                                   backgroundColor: const Color(0xFF111111),
                                   shape: const StadiumBorder(),
                                   minimumSize:
-                                  Size(mq.width * .5, mq.height * .06)),
+                                      Size(mq.width * .5, mq.height * .06)),
                               onPressed: () {
                                 // Handle Update Profile Logic Here
                                 // Check if the form is valid
@@ -259,7 +256,7 @@ class ProfileScreen extends StatelessWidget {
           }
         },
         validator: (val) =>
-        val != null && val.isNotEmpty ? null : 'Required Field',
+            val != null && val.isNotEmpty ? null : 'Required Field',
         decoration: InputDecoration(
           prefixIcon: icon,
           border: OutlineInputBorder(
@@ -318,7 +315,9 @@ class ProfileScreen extends StatelessWidget {
 
                     if (image != null) {
                       _image = image.path;
-                      context.read<ProfileBloc>().add(ProfileEditGalleryPfpEvent(newPfp: image));
+                      context
+                          .read<ProfileBloc>()
+                          .add(ProfileEditGalleryPfpEvent(newPfp: image));
                     }
                   },
                   child: const Icon(Icons.image, color: Colors.greenAccent),
@@ -336,10 +335,13 @@ class ProfileScreen extends StatelessWidget {
 
                     if (image != null) {
                       _image = image.path;
-                      context.read<ProfileBloc>().add(ProfileEditGalleryPfpEvent(newPfp: image));
+                      context
+                          .read<ProfileBloc>()
+                          .add(ProfileEditGalleryPfpEvent(newPfp: image));
                     }
                   },
-                  child: const Icon(CupertinoIcons.camera, color: Colors.greenAccent),
+                  child: const Icon(CupertinoIcons.camera,
+                      color: Colors.greenAccent),
                 ),
               ],
             ),

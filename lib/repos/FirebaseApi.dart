@@ -17,7 +17,8 @@ import '../models/TeamModel.dart';
 import 'accessToken.dart';
 
 // For WorkManager Notification
-@pragma('vm:entry-point') // Mandatory if the App is obfuscated or using Flutter 3.1+
+@pragma(
+    'vm:entry-point') // Mandatory if the App is obfuscated or using Flutter 3.1+
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     await FirebaseApi.checkForPendingTasks();
@@ -40,12 +41,11 @@ class FirebaseApi {
   static FirebaseMessaging fmessaging = FirebaseMessaging.instance;
 
   ///For Getting Firebase Message Token
-  static Future<void> getFirebaseMessagingToken() async{
-    await fmessaging.requestPermission(
-    );
+  static Future<void> getFirebaseMessagingToken() async {
+    await fmessaging.requestPermission();
 
     fmessaging.getToken().then((t) {
-      if(t != null){
+      if (t != null) {
         me.pushToken = t;
         log('Push Token $t');
       }
@@ -64,22 +64,21 @@ class FirebaseApi {
   static late UserModel me;
 
   //For Notifications
-  static Future<void> sendPushNotification(String token, String title, String body) async {
+  static Future<void> sendPushNotification(
+      String token, String title, String body) async {
     AccessFirebaseToken accessToken = AccessFirebaseToken();
     String bearerToken = await accessToken.getAccessToken();
     final notificationBody = {
       "message": {
         "token": token,
-        "notification": {
-          "title": title,
-          "body": body
-        },
+        "notification": {"title": title, "body": body},
       }
     };
 
     try {
       var res = await http.post(
-        Uri.parse('https://fcm.googleapis.com/v1/projects/scuffed-collab/messages:send'),
+        Uri.parse(
+            'https://fcm.googleapis.com/v1/projects/scuffed-collab/messages:send'),
         headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer $bearerToken'
@@ -100,7 +99,8 @@ class FirebaseApi {
       final projectSnapshot = await firestore.collection('Projects').get();
 
       for (var projectDoc in projectSnapshot.docs) {
-        final taskSnapshot = await projectDoc.reference.collection('tasks').get();
+        final taskSnapshot =
+            await projectDoc.reference.collection('tasks').get();
         for (var taskDoc in taskSnapshot.docs) {
           allTasks.add(TaskModel.fromJson(taskDoc.data()));
         }
@@ -118,7 +118,8 @@ class FirebaseApi {
     for (TaskModel task in tasks) {
       if (task.status == 'Pending' || task.status == 'In Progress') {
         DateTime taskDeadline = DateFormat('dd-MM-yyyy').parse(task.deadline);
-        DateTime notificationDate = taskDeadline.subtract(const Duration(days: 2));
+        DateTime notificationDate =
+            taskDeadline.subtract(const Duration(days: 2));
 
         if (today.isAtSameMomentAs(notificationDate)) {
           // Locate team member push token by assigned email
@@ -149,7 +150,6 @@ class FirebaseApi {
     }
   }
 
-
   ///Checking if user exists
   static Future<bool> userExists() async {
     return (await firestore.collection('Users').doc(user.uid).get()).exists;
@@ -172,12 +172,10 @@ class FirebaseApi {
       }
     }));
   }
+
   ///Creating new user
   static Future<void> createUser() async {
-    final time = DateTime
-        .now()
-        .millisecondsSinceEpoch
-        .toString();
+    final time = DateTime.now().millisecondsSinceEpoch.toString();
 
     final appUser = UserModel(
         id: user.uid,
@@ -211,7 +209,10 @@ class FirebaseApi {
       final projectSnapshot = await firestore.collection('Projects').get();
 
       for (var projectDoc in projectSnapshot.docs) {
-        final teamSnapshot = await projectDoc.reference.collection('team').where('id', isEqualTo: me.id).get();
+        final teamSnapshot = await projectDoc.reference
+            .collection('team')
+            .where('id', isEqualTo: me.id)
+            .get();
 
         // If the user is found in the team subcollection, update their `isOnline` status
         if (teamSnapshot.docs.isNotEmpty) {
@@ -232,13 +233,12 @@ class FirebaseApi {
     }
   }
 
-
   ///Updating user info
   static Future<void> updateUserInfo() async {
     await firestore
         .collection('Users')
         .doc(user.uid)
-    //Update and set difference.Update only update existing field, Set creates new field
+        //Update and set difference.Update only update existing field, Set creates new field
         .update({'name': me.Name, 'About': me.About});
   }
 
@@ -253,7 +253,9 @@ class FirebaseApi {
       final ref = storage.ref().child('profile_pictures/${user.uid}.$ext');
 
       // Uploading Image and waiting for completion
-      await ref.putFile(file, SettableMetadata(contentType: 'image/$ext')).then((p0) {
+      await ref
+          .putFile(file, SettableMetadata(contentType: 'image/$ext'))
+          .then((p0) {
         log('Data Transferred: ${p0.bytesTransferred / 1000} KB');
       });
 
@@ -283,7 +285,6 @@ class FirebaseApi {
     }
   }
 
-
   //Check User Exists based on email
 
   static Future<TeamMember?> getTeamMemberByEmail(String email) async {
@@ -309,22 +310,26 @@ class FirebaseApi {
     }
   }
 
-
   /// Getting all projects for which the current user is a team member
   static Future<List<Projects>> getAllProjects() async {
     List<Projects> projectList = [];
     try {
       // Fetch all project documents
-      QuerySnapshot projectSnapshot = await firestore.collection('Projects').get();
+      QuerySnapshot projectSnapshot =
+          await firestore.collection('Projects').get();
 
       // Loop through each project and check if the user is a team member
       for (var projectDoc in projectSnapshot.docs) {
         // Check if the current user is a member of this project
-        QuerySnapshot teamMembersSnapshot = await projectDoc.reference.collection('team').where('id', isEqualTo: me.id).get();
+        QuerySnapshot teamMembersSnapshot = await projectDoc.reference
+            .collection('team')
+            .where('id', isEqualTo: me.id)
+            .get();
 
         if (teamMembersSnapshot.docs.isNotEmpty) {
           // If the user is a team member, add the project to the list
-          projectList.add(Projects.fromJson(projectDoc.data() as Map<String, dynamic>));
+          projectList.add(
+              Projects.fromJson(projectDoc.data() as Map<String, dynamic>));
         }
       }
     } catch (e) {
@@ -335,15 +340,14 @@ class FirebaseApi {
     return projectList;
   }
 
-
   /// Creating a new project with a random ID and sending a notification
 
   static Future<void> createProject(
-      String projectTitle,
-      String projectDescription,
-      String projectDeadline,
-      List<TeamMember> teamMembers,
-      ) async {
+    String projectTitle,
+    String projectDescription,
+    String projectDeadline,
+    List<TeamMember> teamMembers,
+  ) async {
     try {
       final projectRef = firestore.collection('Projects').doc();
       final time = DateTime.now().millisecondsSinceEpoch.toString();
@@ -364,9 +368,9 @@ class FirebaseApi {
         await teamMemberRef.set(member.toJson());
 
         // Send push notification to each team member
-        if (member.pushToken != null && member.pushToken!.isNotEmpty) {
+        if (member.pushToken.isNotEmpty) {
           await sendPushNotification(
-            member.pushToken!,
+            member.pushToken,
             projectTitle,
             projectDescription,
           );
@@ -406,11 +410,11 @@ class FirebaseApi {
     }
   }
 
-
   /// Getting a specific project -- Change sometime
   static Future<Projects?> getProject(String projectId) async {
     try {
-      final docSnapshot = await firestore.collection('Projects').doc(projectId).get();
+      final docSnapshot =
+          await firestore.collection('Projects').doc(projectId).get();
       if (docSnapshot.exists) {
         return Projects.fromJson(docSnapshot.data()!);
       }
@@ -424,7 +428,11 @@ class FirebaseApi {
   static Future<List<TeamMember>> getTeamMembers(String projectId) async {
     List<TeamMember> teamMembers = [];
     try {
-      final snapshot = await firestore.collection('Projects').doc(projectId).collection('team').get();
+      final snapshot = await firestore
+          .collection('Projects')
+          .doc(projectId)
+          .collection('team')
+          .get();
       for (var doc in snapshot.docs) {
         teamMembers.add(TeamMember.fromJson(doc.data()));
       }
@@ -438,7 +446,11 @@ class FirebaseApi {
   static Future<List<TaskModel>> getTasks(String projectId) async {
     List<TaskModel> tasks = [];
     try {
-      final snapshot = await firestore.collection('Projects').doc(projectId).collection('tasks').get();
+      final snapshot = await firestore
+          .collection('Projects')
+          .doc(projectId)
+          .collection('tasks')
+          .get();
       for (var doc in snapshot.docs) {
         tasks.add(TaskModel.fromJson(doc.data()));
       }
@@ -451,10 +463,15 @@ class FirebaseApi {
   /// Creating a team member for a project
   static Future<void> addTeamMember(Projects project, TeamMember member) async {
     try {
-      await firestore.collection('Projects').doc(project.id).collection('team').doc(member.id).set(member.toJson());
+      await firestore
+          .collection('Projects')
+          .doc(project.id)
+          .collection('team')
+          .doc(member.id)
+          .set(member.toJson());
 
       await sendPushNotification(
-        member.pushToken!,
+        member.pushToken,
         project.title,
         project.description,
       );
@@ -465,31 +482,34 @@ class FirebaseApi {
 
   /// Creating a task for a project
   static Future<void> addTask(
-      String projectId,
-      String taskTitle,
-      String taskDescription,
-      String taskDeadline,
-      String assignedTo,
-      String taskStatus,
-      ) async {
+    String projectId,
+    String taskTitle,
+    String taskDescription,
+    String taskDeadline,
+    String assignedTo,
+    String taskStatus,
+  ) async {
     try {
-      final taskRef = firestore.collection('Projects').doc(projectId).collection('tasks').doc();
+      final taskRef = firestore
+          .collection('Projects')
+          .doc(projectId)
+          .collection('tasks')
+          .doc();
       final TaskModel task = TaskModel(
-        id: taskRef.id,
-        title: taskTitle,
-        description: taskDescription,
-        assignedTo: assignedTo,
-        status: taskStatus,
-        deadline: taskDeadline,
-        projectId: projectId
-      );
+          id: taskRef.id,
+          title: taskTitle,
+          description: taskDescription,
+          assignedTo: assignedTo,
+          status: taskStatus,
+          deadline: taskDeadline,
+          projectId: projectId);
       await taskRef.set(task.toJson());
 
       // Retrieve the assigned team member's push token
       TeamMember? assignedMember = await getTeamMemberByEmail(assignedTo);
-      if (assignedMember != null && assignedMember.pushToken != null && assignedMember.pushToken!.isNotEmpty) {
+      if (assignedMember != null && assignedMember.pushToken.isNotEmpty) {
         await sendPushNotification(
-          assignedMember.pushToken!,
+          assignedMember.pushToken,
           taskTitle,
           taskDescription,
         );
@@ -500,10 +520,15 @@ class FirebaseApi {
   }
 
   /// Updating task status
-  static Future<void> updateTaskStatus(String projectId, String taskId, String newStatus) async {
+  static Future<void> updateTaskStatus(
+      String projectId, String taskId, String newStatus) async {
     try {
       // Reference to the specific task document within the tasks subcollection of the project
-      final taskRef = firestore.collection('Projects').doc(projectId).collection('tasks').doc(taskId);
+      final taskRef = firestore
+          .collection('Projects')
+          .doc(projectId)
+          .collection('tasks')
+          .doc(taskId);
 
       // Update the status field of the task document
       await taskRef.update({'status': newStatus});
@@ -517,7 +542,11 @@ class FirebaseApi {
   static Future<void> deleteTask(String projectId, String taskId) async {
     try {
       // Reference to the specific task document within the tasks subcollection of the project
-      final taskRef = firestore.collection('Projects').doc(projectId).collection('tasks').doc(taskId);
+      final taskRef = firestore
+          .collection('Projects')
+          .doc(projectId)
+          .collection('tasks')
+          .doc(taskId);
 
       // Delete the task document
       await taskRef.delete();
@@ -526,7 +555,4 @@ class FirebaseApi {
       log('Error deleting task: $e');
     }
   }
-
-
-
 }

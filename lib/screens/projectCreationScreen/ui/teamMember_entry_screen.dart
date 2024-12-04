@@ -1,10 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../helper/dailogs.dart';
 import '../../../main.dart';
-import '../../../models/TeamModel.dart';
 import '../../../widgets/TextFieldWidget.dart';
 import '../projectCreationBloc/project_bloc.dart';
 
@@ -16,7 +13,11 @@ class TeamMemberEntryScreen extends StatelessWidget {
   // Add a GlobalKey for the Scaffold
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  TeamMemberEntryScreen({required this.projectTitle, required this.projectDeadline, required this.projectDescription});
+  TeamMemberEntryScreen(
+      {super.key,
+      required this.projectTitle,
+      required this.projectDeadline,
+      required this.projectDescription});
 
   final TextEditingController emailController = TextEditingController();
 
@@ -37,10 +38,11 @@ class TeamMemberEntryScreen extends StatelessWidget {
           Navigator.pushNamedAndRemoveUntil(
             context,
             '/home',
-                (route) => false, // Removes all the previous routes
+            (route) => false, // Removes all the previous routes
           );
         } else if (state is ProjectTeamEmptyState) {
-          Dialogs.showSnackBar(context, 'Add a team member to create a project');
+          Dialogs.showSnackBar(
+              context, 'Add a team member to create a project');
         } else if (state is ProjectErrorState) {
           Dialogs.showSnackBar(context, state.message);
         }
@@ -67,7 +69,8 @@ class TeamMemberEntryScreen extends StatelessWidget {
           floatingActionButton: Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: EdgeInsets.only(left: mq.width * .08, bottom: mq.height * .03),
+              padding: EdgeInsets.only(
+                  left: mq.width * .08, bottom: mq.height * .03),
               child: SizedBox(
                 width: mq.width * .6,
                 child: FloatingActionButton(
@@ -78,11 +81,14 @@ class TeamMemberEntryScreen extends StatelessWidget {
                   onPressed: () {
                     // Create Project
                     context.read<ProjectBloc>().add(ProjectCreateButtonEvent(
-                        title: projectTitle, description: projectDescription, deadline: projectDeadline));
+                        title: projectTitle,
+                        description: projectDescription,
+                        deadline: projectDeadline));
                   },
                   child: Text(
                     'Create Project',
-                    style: TextStyle(color: Colors.greenAccent, fontSize: mq.width * .045),
+                    style: TextStyle(
+                        color: Colors.greenAccent, fontSize: mq.width * .045),
                   ),
                 ),
               ),
@@ -94,7 +100,8 @@ class TeamMemberEntryScreen extends StatelessWidget {
               SizedBox(height: mq.height * .04),
               Center(
                 child: RoundedTextField(
-                  padding: EdgeInsets.symmetric(horizontal: mq.width * .05, vertical: mq.height * .014),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: mq.width * .05, vertical: mq.height * .014),
                   fillColor: const Color(0xFF3c3c3c),
                   borderColor: const Color(0xFF1e1e1e),
                   width: mq.width * .8,
@@ -108,12 +115,16 @@ class TeamMemberEntryScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     final email = emailController.text;
-                    context.read<ProjectBloc>().add(ProjectMemberAddedEvent(email));
+                    context
+                        .read<ProjectBloc>()
+                        .add(ProjectMemberAddedEvent(email));
                     emailController.clear();
                   },
                   style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(const Color(0xFF111111)),
-                    fixedSize: WidgetStateProperty.all(Size(mq.width * .7, mq.height * .07)),
+                    backgroundColor:
+                        WidgetStateProperty.all(const Color(0xFF111111)),
+                    fixedSize: WidgetStateProperty.all(
+                        Size(mq.width * .7, mq.height * .07)),
                   ),
                   child: Text(
                     'Add Team Member',
@@ -143,22 +154,30 @@ class TeamMemberEntryScreen extends StatelessWidget {
           final member = state.members[index];
           return Card(
             surfaceTintColor: const Color(0xFF111111),
-            margin: EdgeInsets.symmetric(vertical: mq.height * .01, horizontal: mq.width * .03),
+            margin: EdgeInsets.symmetric(
+                vertical: mq.height * .01, horizontal: mq.width * .03),
             child: ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: mq.width * .03, vertical: mq.height * .005),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(mq.width * .02)),
+              contentPadding: EdgeInsets.symmetric(
+                  horizontal: mq.width * .03, vertical: mq.height * .005),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(mq.width * .02)),
               tileColor: const Color(0xFF111111),
               leading: CircleAvatar(
-                backgroundImage: NetworkImage(member.profilePicture), // Profile picture
+                backgroundImage:
+                    NetworkImage(member.profilePicture), // Profile picture
               ),
               title: Text(member.name,
-                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-              subtitle: Text(member.email, style: const TextStyle(color: Colors.white70)),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white)),
+              subtitle: Text(member.email,
+                  style: const TextStyle(color: Colors.white70)),
             ),
           );
         },
       );
     }
-    return const Center(child: Text('No team members added.', style: TextStyle(color: Colors.white70)));
+    return const Center(
+        child: Text('No team members added.',
+            style: TextStyle(color: Colors.white70)));
   }
 }

@@ -5,7 +5,6 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:scuffed_collab/models/TeamModel.dart';
 import 'package:scuffed_collab/repos/FirebaseApi.dart';
-import 'package:scuffed_collab/screens/projectCreationScreen/projectCreationBloc/project_bloc.dart';
 
 import '../../../models/ProjectsModel.dart';
 import '../../../models/TaskModel.dart';
@@ -13,7 +12,8 @@ import '../../../models/TaskModel.dart';
 part 'project_details_event.dart';
 part 'project_details_state.dart';
 
-class ProjectDetailsBloc extends Bloc<ProjectDetailsEvent, ProjectDetailsState> {
+class ProjectDetailsBloc
+    extends Bloc<ProjectDetailsEvent, ProjectDetailsState> {
   ProjectDetailsBloc() : super(ProjectDetailsInitial()) {
     on<ProjectDetailsInitialEvent>(projectInitialEvent);
     on<ProjectDetailsAddTaskButtonEvent>(projectDetailsAddTaskButtonEvent);
@@ -33,28 +33,30 @@ class ProjectDetailsBloc extends Bloc<ProjectDetailsEvent, ProjectDetailsState> 
     on<TaskEmptyFieldsEvent>(taskEmptyFieldsEvent);
   }
 
-  List<TeamMember?> teamMembers=[];
-  List<TaskModel?> tasks=[];
+  List<TeamMember?> teamMembers = [];
+  List<TaskModel?> tasks = [];
 
-  FutureOr<void> projectInitialEvent(ProjectDetailsInitialEvent event, Emitter<ProjectDetailsState> emit) async {
+  FutureOr<void> projectInitialEvent(ProjectDetailsInitialEvent event,
+      Emitter<ProjectDetailsState> emit) async {
     emit(ProjectDetailsLoadingState());
     try {
       teamMembers = await FirebaseApi.getTeamMembers(event.project.id);
       tasks = await FirebaseApi.getTasks(event.project.id);
-      emit(ProjectDetailsSuccessState(teamMembers: teamMembers,tasks: tasks));
-
+      emit(ProjectDetailsSuccessState(teamMembers: teamMembers, tasks: tasks));
     } catch (e) {
       // TODO
       emit(ProjectDetailsErrorState(error: e.toString()));
     }
 
-    for (var member in teamMembers){
+    for (var member in teamMembers) {
       log(member!.email);
     }
   }
 
   //Delete Project
-  FutureOr<void> projectDetailsDeleteBtnEvent(ProjectDetailsDeleteBtnEvent event, Emitter<ProjectDetailsState> emit) async {
+  FutureOr<void> projectDetailsDeleteBtnEvent(
+      ProjectDetailsDeleteBtnEvent event,
+      Emitter<ProjectDetailsState> emit) async {
     try {
       await FirebaseApi.deleteProject(event.projectId);
 
@@ -65,16 +67,22 @@ class ProjectDetailsBloc extends Bloc<ProjectDetailsEvent, ProjectDetailsState> 
     }
   }
 
-  FutureOr<void> projectDetailsAddTaskButtonEvent(ProjectDetailsAddTaskButtonEvent event, Emitter<ProjectDetailsState> emit) {
-    emit(ProjectDetailsAddTaskBtnNavState(teamMembers: teamMembers, projectId: event.projectId));
+  FutureOr<void> projectDetailsAddTaskButtonEvent(
+      ProjectDetailsAddTaskButtonEvent event,
+      Emitter<ProjectDetailsState> emit) {
+    emit(ProjectDetailsAddTaskBtnNavState(
+        teamMembers: teamMembers, projectId: event.projectId));
   }
 
   // Member Add Screens
-  FutureOr<void> projectDetailsMemberBtnEvent(ProjectDetailsMemberBtnEvent event, Emitter<ProjectDetailsState> emit) {
+  FutureOr<void> projectDetailsMemberBtnEvent(
+      ProjectDetailsMemberBtnEvent event, Emitter<ProjectDetailsState> emit) {
     emit(ProjectDetailsMemberBtnNavState());
   }
 
-  FutureOr<void> projectDetailsMemberAddedEvent(ProjectDetailsMemberAddedEvent event, Emitter<ProjectDetailsState> emit) async {
+  FutureOr<void> projectDetailsMemberAddedEvent(
+      ProjectDetailsMemberAddedEvent event,
+      Emitter<ProjectDetailsState> emit) async {
     try {
       TeamMember? member = await FirebaseApi.getTeamMemberByEmail(event.email);
 
@@ -93,22 +101,29 @@ class ProjectDetailsBloc extends Bloc<ProjectDetailsEvent, ProjectDetailsState> 
       emit(ProjectDetailsErrorState(error: e.toString()));
     }
   }
+
   // Task Screen Events
-  FutureOr<void> taskAssignedChangeEvent(TaskAssignedChangeEvent event, Emitter<ProjectDetailsState> emit) {
+  FutureOr<void> taskAssignedChangeEvent(
+      TaskAssignedChangeEvent event, Emitter<ProjectDetailsState> emit) {
     emit(TaskAssignedChangedState(email: event.email));
   }
 
-  FutureOr<void> taskStatusChangeEvent(TaskStatusChangeEvent event, Emitter<ProjectDetailsState> emit) {
+  FutureOr<void> taskStatusChangeEvent(
+      TaskStatusChangeEvent event, Emitter<ProjectDetailsState> emit) {
     emit(TaskStatusChangedState(status: event.status));
   }
 
-  FutureOr<void> taskDeadlineSelectedEvent(TaskDeadlineSelectedEvent event, Emitter<ProjectDetailsState> emit) {
+  FutureOr<void> taskDeadlineSelectedEvent(
+      TaskDeadlineSelectedEvent event, Emitter<ProjectDetailsState> emit) {
     emit(TaskDeadlineSubmittedState(deadline: event.deadline));
   }
 
-  FutureOr<void> projectDetailsCreateTaskEvent(ProjectDetailsCreateTaskEvent event, Emitter<ProjectDetailsState> emit) async {
+  FutureOr<void> projectDetailsCreateTaskEvent(
+      ProjectDetailsCreateTaskEvent event,
+      Emitter<ProjectDetailsState> emit) async {
     try {
-      await FirebaseApi.addTask(event.taskId,
+      await FirebaseApi.addTask(
+          event.taskId,
           event.taskTitle,
           event.taskDescription,
           event.taskDeadline,
@@ -116,28 +131,31 @@ class ProjectDetailsBloc extends Bloc<ProjectDetailsEvent, ProjectDetailsState> 
           event.taskStatus);
 
       emit(ProjectDetailsCreateTaskNavState());
-
     } catch (e) {
       // TODO
       emit(ProjectDetailsErrorState(error: e.toString()));
     }
   }
 
-  FutureOr<void> taskClickedEvent(TaskClickedEvent event, Emitter<ProjectDetailsState> emit) {
+  FutureOr<void> taskClickedEvent(
+      TaskClickedEvent event, Emitter<ProjectDetailsState> emit) {
     emit(TaskClickedNavState(task: event.task));
   }
 
-  FutureOr<void> taskScreenStatusChangedEvent(TaskScreenStatusChangedEvent event, Emitter<ProjectDetailsState> emit) async {
-    try{
-      await FirebaseApi.updateTaskStatus(event.projectId, event.taskId, event.status);
+  FutureOr<void> taskScreenStatusChangedEvent(
+      TaskScreenStatusChangedEvent event,
+      Emitter<ProjectDetailsState> emit) async {
+    try {
+      await FirebaseApi.updateTaskStatus(
+          event.projectId, event.taskId, event.status);
       emit(TaskStatusUpdatedNavBackBtnState());
-
-    }catch (e){
+    } catch (e) {
       emit(ProjectDetailsErrorState(error: e.toString()));
     }
   }
 
-  FutureOr<void> taskDeleteBtnEvent(TaskDeleteBtnEvent event, Emitter<ProjectDetailsState> emit) async {
+  FutureOr<void> taskDeleteBtnEvent(
+      TaskDeleteBtnEvent event, Emitter<ProjectDetailsState> emit) async {
     try {
       await FirebaseApi.deleteTask(event.projectId, event.taskId);
       emit(TaskDeleteBtnNavState());
@@ -146,10 +164,8 @@ class ProjectDetailsBloc extends Bloc<ProjectDetailsEvent, ProjectDetailsState> 
     }
   }
 
-
-  FutureOr<void> taskEmptyFieldsEvent(TaskEmptyFieldsEvent event, Emitter<ProjectDetailsState> emit) {
+  FutureOr<void> taskEmptyFieldsEvent(
+      TaskEmptyFieldsEvent event, Emitter<ProjectDetailsState> emit) {
     emit(TaskEmptyFieldsState());
   }
-
-
 }

@@ -1,6 +1,3 @@
-import 'TaskModel.dart';
-import 'TeamModel.dart';
-
 class Projects {
   late String id;
   late String title;
@@ -22,7 +19,6 @@ class Projects {
         createdAt = json['created_at'] ?? '',
         deadline = json['deadline'] ?? '',
         description = json['description'] ?? ''; // Deserialize description
-
 
   Map<String, dynamic> toJson() {
     return {

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:scuffed_collab/helper/dailogs.dart';
-import 'package:scuffed_collab/screens/projectCreationScreen/projectCreationBloc/project_bloc.dart';
 import 'package:scuffed_collab/screens/projectScreen/projectBloc/project_details_bloc.dart';
 import 'package:scuffed_collab/widgets/TextFieldWidget.dart';
 
@@ -15,9 +14,10 @@ class CreateTaskScreen extends StatelessWidget {
   final List<TeamMember?> teamMembers;
   final Projects project;
   const CreateTaskScreen({
-    Key? key,
-    required this.teamMembers, required this.project,
-  }) : super(key: key);
+    super.key,
+    required this.teamMembers,
+    required this.project,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +29,8 @@ class CreateTaskScreen extends StatelessWidget {
     String deadlineText = 'Select Task Deadline';
     final DateFormat dateFormat = DateFormat('dd-MM-yyyy');
 
-
     // Function to show the date picker
-    Future<void> _selectDate(BuildContext context) async {
+    Future<void> selectDate(BuildContext context) async {
       final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
@@ -66,11 +65,11 @@ class CreateTaskScreen extends StatelessWidget {
     return BlocConsumer<ProjectDetailsBloc, ProjectDetailsState>(
       listener: (context, state) {
         // TODO: implement listener
-        if(state is ProjectDetailsCreateTaskNavState){
+        if (state is ProjectDetailsCreateTaskNavState) {
           Navigator.pop(context);
-        } else if (state is ProjectDetailsErrorState){
+        } else if (state is ProjectDetailsErrorState) {
           Dialogs.showSnackBar(context, state.error);
-        } else if (state is TaskEmptyFieldsState){
+        } else if (state is TaskEmptyFieldsState) {
           Dialogs.showSnackBar(context, 'Fill All fields');
         }
       },
@@ -124,18 +123,18 @@ class CreateTaskScreen extends StatelessWidget {
                   SizedBox(
                     height: mq.height * .02,
                   ),
-            
+
                   // Task Description
                   const Text(
                     'Task Description',
                     style: TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.white),
                   ),
-            
+
                   SizedBox(
                     height: mq.height * .02,
                   ),
-            
+
                   RoundedTextField(
                     width: mq.width * .8,
                     height: mq.height * .05,
@@ -150,7 +149,7 @@ class CreateTaskScreen extends StatelessWidget {
                   SizedBox(
                     height: mq.height * .02,
                   ),
-            
+
                   // Assigned To
                   const Text(
                     'Assigned To',
@@ -185,13 +184,12 @@ class CreateTaskScreen extends StatelessWidget {
                               child: Icon(
                                 Icons.arrow_back_ios_new_rounded,
                                 color: Colors.greenAccent,
-                                size: mq.width *.055,
+                                size: mq.width * .055,
                               )),
                           value:
                               selectedAssignedTo, // Display the selected value as the current value
                           isExpanded: true,
-                          items: teamMembers
-                              .map((member) {
+                          items: teamMembers.map((member) {
                             return DropdownMenuItem<String>(
                               value: member!.email,
                               child: Text(member.email),
@@ -217,18 +215,18 @@ class CreateTaskScreen extends StatelessWidget {
                       );
                     },
                   ),
-            
-                  SizedBox(height: mq.height *.02),
-            
+
+                  SizedBox(height: mq.height * .02),
+
                   // Task Status
                   const Text(
                     'Status',
                     style: TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.white),
                   ),
-            
-                  SizedBox(height: mq.height *.02),
-            
+
+                  SizedBox(height: mq.height * .02),
+
                   BlocBuilder<ProjectDetailsBloc, ProjectDetailsState>(
                     builder: (context, state) {
                       if (state is TaskStatusChangedState) {
@@ -254,7 +252,7 @@ class CreateTaskScreen extends StatelessWidget {
                               child: Icon(
                                 Icons.arrow_back_ios_new_rounded,
                                 color: Colors.greenAccent,
-                                size: mq.width *.055,
+                                size: mq.width * .055,
                               )),
                           items: const [
                             DropdownMenuItem(
@@ -287,7 +285,7 @@ class CreateTaskScreen extends StatelessWidget {
                   SizedBox(
                     height: mq.height * .02,
                   ),
-            
+
                   // Deadline
                   const Text(
                     'Deadline',
@@ -297,7 +295,7 @@ class CreateTaskScreen extends StatelessWidget {
                   SizedBox(
                     height: mq.height * .02,
                   ),
-            
+
                   BlocBuilder<ProjectDetailsBloc, ProjectDetailsState>(
                     builder: (context, state) {
                       if (state is TaskDeadlineSubmittedState) {
@@ -305,7 +303,7 @@ class CreateTaskScreen extends StatelessWidget {
                       }
                       return Center(
                         child: GestureDetector(
-                          onTap: () => _selectDate(context),
+                          onTap: () => selectDate(context),
                           child: Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: mq.width * .05,
@@ -316,7 +314,8 @@ class CreateTaskScreen extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: const Color(0xFF3c3c3c),
                               borderRadius: BorderRadius.circular(30),
-                              border: Border.all(color: const Color(0xFF1e1e1e)),
+                              border:
+                                  Border.all(color: const Color(0xFF1e1e1e)),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -338,9 +337,9 @@ class CreateTaskScreen extends StatelessWidget {
                       );
                     },
                   ),
-            
+
                   SizedBox(height: mq.height * .1),
-            
+
                   // Create Task Button
                   Center(
                     child: ElevatedButton(
@@ -354,20 +353,26 @@ class CreateTaskScreen extends StatelessWidget {
                       onPressed: () {
                         final taskTitle = titleController.text;
                         final taskDescription = descriptionController.text;
-            
-                        if(taskTitle.isNotEmpty && taskDescription.isNotEmpty && deadlineText.isNotEmpty ) {
-                          context.read<ProjectDetailsBloc>().add(ProjectDetailsCreateTaskEvent(
-                              taskId: project.id,
-                              taskTitle: taskTitle,
-                              taskDescription: taskDescription,
-                              taskAssigned: selectedAssignedTo,
-                              taskStatus: status,
-                              taskDeadline: deadlineText),
-                          );
-                          
-                          context.read<ProjectDetailsBloc>().add(ProjectDetailsInitialEvent(project: project ));
+
+                        if (taskTitle.isNotEmpty &&
+                            taskDescription.isNotEmpty &&
+                            deadlineText.isNotEmpty) {
+                          context.read<ProjectDetailsBloc>().add(
+                                ProjectDetailsCreateTaskEvent(
+                                    taskId: project.id,
+                                    taskTitle: taskTitle,
+                                    taskDescription: taskDescription,
+                                    taskAssigned: selectedAssignedTo,
+                                    taskStatus: status,
+                                    taskDeadline: deadlineText),
+                              );
+
+                          context.read<ProjectDetailsBloc>().add(
+                              ProjectDetailsInitialEvent(project: project));
                         } else {
-                          context.read<ProjectDetailsBloc>().add(TaskEmptyFieldsEvent());
+                          context
+                              .read<ProjectDetailsBloc>()
+                              .add(TaskEmptyFieldsEvent());
                         }
                       },
                       child: const Text(
