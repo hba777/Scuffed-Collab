@@ -348,19 +348,6 @@ class FirebaseApi {
       final projectRef = firestore.collection('Projects').doc();
       final time = DateTime.now().millisecondsSinceEpoch.toString();
 
-      // Add the current user (me) as a team member
-      final TeamMember currentUserAsMember = TeamMember(
-        id: me.id, // Assuming me.id is the user's ID
-        name: me.Name, // Assuming me.name is the user's name
-        email: me.Email, // Assuming me.email is the user's email
-        profilePicture: me.Image, // Assuming me.profilePicture exists
-        pushToken: me.pushToken ?? '', // Assuming me.pushToken may be null
-        isOnline: true, // You can set isOnline to true by default
-      );
-
-      // Include the current user in the teamMembers list
-      teamMembers.insert(0, currentUserAsMember); // Add me at the beginning of the list
-
       final Projects project = Projects(
         id: projectRef.id,
         title: projectTitle,

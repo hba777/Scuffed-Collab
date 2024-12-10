@@ -1,10 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../helper/dailogs.dart';
 import '../../../main.dart';
-import '../../../models/TeamModel.dart';
 import '../../../widgets/TextFieldWidget.dart';
 import '../projectCreationBloc/project_bloc.dart';
 
@@ -22,6 +19,8 @@ class TeamMemberEntryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<ProjectBloc>().add(ProjectTeamMemberScreenLoadedEvent());
+
     return BlocConsumer<ProjectBloc, ProjectState>(
       listenWhen: (previous, current) => current is ProjectActionState,
       buildWhen: (previous, current) => current is! ProjectActionState,
@@ -29,6 +28,8 @@ class TeamMemberEntryScreen extends StatelessWidget {
         if (state is ProjectTeamMemberAdded) {
           // Show success message
           Dialogs.showSnackBar(context, 'Team Member Added');
+        } else if (state is ProjectBackBtnNavState){
+          Navigator.pop(context);
         } else if (state is ProjectTeamMemberNotExistState) {
           Dialogs.showSnackBar(context, 'User Does Not Exist');
         } else if (state is ProjectMemberAlreadyExistsState) {
@@ -51,7 +52,7 @@ class TeamMemberEntryScreen extends StatelessWidget {
           appBar: AppBar(
             leading: IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                context.read<ProjectBloc>().add(ProjectBackBtnEvent());
               },
               icon: Icon(
                 Icons.arrow_back_ios_new_rounded,
@@ -159,6 +160,11 @@ class TeamMemberEntryScreen extends StatelessWidget {
         },
       );
     }
-    return const Center(child: Text('No team members added.', style: TextStyle(color: Colors.white70)));
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: mq.width *.06),
+      child: const Center(child: Text('No team members added.',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.white70))),
+    );
   }
 }

@@ -9,6 +9,8 @@ class ProjectInitial extends ProjectState {}
 
 class ProjectSuccessState extends ProjectState {}
 
+class ProjectBackBtnNavState extends ProjectActionState{}
+
 class ProjectSubmittingState extends ProjectState {}
 
 class ProjectSubmittedState extends ProjectActionState {

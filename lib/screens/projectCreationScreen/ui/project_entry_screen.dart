@@ -198,7 +198,7 @@ class ProjectEntryScreen extends StatelessWidget {
                           final title = titleController.text;
                           final description = descriptionController.text;
 
-                          if (title.isNotEmpty && description.isNotEmpty && deadlineText.isNotEmpty) {
+                          if (title.isNotEmpty && description.isNotEmpty && deadlineText != 'Select Project Deadline') {
                             context.read<ProjectBloc>().add(
                               ProjectDetailsSubmittedEvent(
                                 title: title,

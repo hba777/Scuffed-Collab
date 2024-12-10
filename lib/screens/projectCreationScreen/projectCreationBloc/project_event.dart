@@ -5,6 +5,10 @@ abstract class ProjectEvent {}
 
 class ProjectInitialEvent extends ProjectEvent {}
 
+class ProjectBackBtnEvent extends ProjectEvent{}
+
+class ProjectTeamMemberScreenLoadedEvent extends ProjectEvent{}
+
 class ProjectDetailsSubmittedEvent extends ProjectEvent {
   final String title;
   final String description;
