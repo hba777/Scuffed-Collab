@@ -455,7 +455,7 @@ class FirebaseApi {
 
       await sendPushNotification(
         member.pushToken!,
-        project.title,
+        'You have been added to Project: ${project.title}',
         project.description,
       );
     } catch (e) {
