@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final DateFormat dateFormat = DateFormat('dd-MM-yyyy');
   List<Projects> filteredProjects = []; // List to hold filtered projects
 
-  RefreshController _refreshController = RefreshController(initialRefresh: false);
+  final RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   void _onRefresh() async{
     // monitor network fetch
