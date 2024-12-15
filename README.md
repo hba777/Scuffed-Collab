@@ -40,7 +40,7 @@ A project management application built with Flutter that enables users to create
 <img src="https://github.com/user-attachments/assets/ff587317-9190-48fd-8a5f-3a7f42a4dd66" alt="Project Creation Screen 2" width="300"/>
 
 ### Project Details Screen
-<img src="https://github.com/user-attachments/assets/ef76951e-106a-4e03-8a31-098a32c0042a" alt="Project Details Screen" width="300"/>
+![d919de15-c7a4-43e4-9301-6a8902cac2ae](https://github.com/user-attachments/assets/47963353-f963-4e76-b075-630fa63aa8e3)
 
 ### Task Creation Screen
 <img src="https://github.com/user-attachments/assets/d3315e85-f10b-4405-9d41-88504f643590" alt="Task Creation Screen" width="300"/>
