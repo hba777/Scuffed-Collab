@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scuffed_collab/helper/dailogs.dart';
+import 'package:scuffed_collab/models/TeamModel.dart';
 import 'package:scuffed_collab/screens/homeScreen/homeBloc/home_bloc.dart';
 import 'package:scuffed_collab/screens/projectScreen/projectBloc/project_details_bloc.dart';
 import 'package:scuffed_collab/screens/projectScreen/ui/project_memberAdd_screen.dart';
@@ -135,7 +136,7 @@ class ProjectScreen extends StatelessWidget {
                 ),
 
                 // Team Members List
-                _buildTeamMemberList(state),
+                _buildTeamMemberList(state, project),
 
                 SizedBox(height: mq.height *.02,),
                 // Tasks Heading
@@ -162,7 +163,7 @@ class ProjectScreen extends StatelessWidget {
   }
 }
 
-Widget _buildTeamMemberList(ProjectDetailsState state) {
+Widget _buildTeamMemberList(ProjectDetailsState state, Projects project) {
   if (state is ProjectDetailsSuccessState) {
     if (state.teamMembers.isEmpty) {
       return const Center(
@@ -190,6 +191,7 @@ Widget _buildTeamMemberList(ProjectDetailsState state) {
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
+                  // Main Avatar
                   CircleAvatar(
                     radius: mq.width * .08, // Adjust the size as needed
                     backgroundColor: Colors.grey.shade200, // Background color in case image fails to load
@@ -210,6 +212,25 @@ Widget _buildTeamMemberList(ProjectDetailsState state) {
                     child: CircleAvatar(
                       radius: mq.width * .02, // Adjust the size of the status indicator
                       backgroundColor: member.isOnline ? Colors.greenAccent : Colors.yellow,
+                    ),
+                  ),
+                  // Red circle with cross icon
+                  Positioned(
+                    top: -mq.width * .015, // Slightly offset to the outside
+                    right: -mq.width * .015, // Slightly offset to the outside
+                    child: GestureDetector(
+                      onTap: () {
+                        _showMemberDeleteConfirmationDialog(context, project, member);
+                        },
+                      child: CircleAvatar(
+                        radius: mq.width * .03, // Adjust the size of the red circle
+                        backgroundColor: Colors.red, // Red background color
+                        child: const Icon(
+                          Icons.close,
+                          size: 16, // Adjust the size of the cross icon
+                          color: Colors.white, // White cross icon
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -384,6 +405,62 @@ void _showDeleteConfirmationDialog(BuildContext parentContext, Projects project,
             },
             child: const Text(
               'Delete',
+              style: TextStyle(color: Colors.redAccent),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void _showMemberDeleteConfirmationDialog(BuildContext parentContext, Projects project, TeamMember member) {
+  showDialog(
+    context: parentContext,
+    builder: (_) {
+      return AlertDialog(
+        backgroundColor: Colors.grey[900],
+        title: const Text(
+          'Remove Member',
+          style: TextStyle(color: Colors.white),
+        ),
+        content: Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Are you sure you want to remove ',
+                style: TextStyle(color: Colors.white70),
+              ),
+              TextSpan(
+                text: '"${member.name}"',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const TextSpan(
+                text: '?',
+                style: TextStyle(color: Colors.white70),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(parentContext).pop(),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.greenAccent),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              // TODO: Add action for removing member
+              parentContext.read<ProjectDetailsBloc>().add(ProjectDetailsRemoveMemberEvent(member: member, project: project));
+              Navigator.pop(parentContext);
+            },
+            child: const Text(
+              'Remove',
               style: TextStyle(color: Colors.redAccent),
             ),
           ),

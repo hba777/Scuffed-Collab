@@ -21,6 +21,7 @@ class ProjectDetailsBloc extends Bloc<ProjectDetailsEvent, ProjectDetailsState> 
     // Member Add Screen
     on<ProjectDetailsMemberBtnEvent>(projectDetailsMemberBtnEvent);
     on<ProjectDetailsMemberAddedEvent>(projectDetailsMemberAddedEvent);
+    on<ProjectDetailsRemoveMemberEvent>(projectDetailsRemoveMemberEvent);
 
     // Task Screen Events
     on<TaskAssignedChangeEvent>(taskAssignedChangeEvent);
@@ -65,10 +66,23 @@ class ProjectDetailsBloc extends Bloc<ProjectDetailsEvent, ProjectDetailsState> 
     }
   }
 
+  //Add Task
   FutureOr<void> projectDetailsAddTaskButtonEvent(ProjectDetailsAddTaskButtonEvent event, Emitter<ProjectDetailsState> emit) {
     emit(ProjectDetailsAddTaskBtnNavState(teamMembers: teamMembers, projectId: event.projectId));
   }
 
+  //Remove Team Member
+  FutureOr<void> projectDetailsRemoveMemberEvent(ProjectDetailsRemoveMemberEvent event, Emitter<ProjectDetailsState> emit) async {
+    try {
+      await FirebaseApi.removeTeamMember(event.project, event.member);
+      teamMembers.remove(event.member);
+      log('Removed member ${event.member.name}');
+      emit(ProjectDetailsSuccessState(teamMembers: teamMembers,tasks: tasks));
+    } catch (e) {
+      // TODO
+      emit(ProjectDetailsErrorState(error: e.toString()));
+    }
+  }
   // Member Add Screens
   FutureOr<void> projectDetailsMemberBtnEvent(ProjectDetailsMemberBtnEvent event, Emitter<ProjectDetailsState> emit) {
     emit(ProjectDetailsMemberBtnNavState());
@@ -83,7 +97,7 @@ class ProjectDetailsBloc extends Bloc<ProjectDetailsEvent, ProjectDetailsState> 
 
         teamMembers.add(member);
         log(member.email);
-        emit(ProjectTeamMemberAdded());
+        emit(ProjectTeamMemberAdded(email: member.email));
       } else if (member == null) {
         emit(ProjectTeamMemberNotExistState());
       } else {
@@ -150,6 +164,4 @@ class ProjectDetailsBloc extends Bloc<ProjectDetailsEvent, ProjectDetailsState> 
   FutureOr<void> taskEmptyFieldsEvent(TaskEmptyFieldsEvent event, Emitter<ProjectDetailsState> emit) {
     emit(TaskEmptyFieldsState());
   }
-
-
 }

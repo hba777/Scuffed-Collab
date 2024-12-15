@@ -26,6 +26,13 @@ class ProjectDetailsMemberAddedEvent extends ProjectDetailsEvent {
   ProjectDetailsMemberAddedEvent({required this.email, required this.project});
 }
 
+class ProjectDetailsRemoveMemberEvent extends ProjectDetailsEvent{
+  final TeamMember member;
+  final Projects project;
+
+  ProjectDetailsRemoveMemberEvent({required this.member, required this.project});
+
+}
 // Task Events
 class ProjectDetailsAddTaskButtonEvent extends ProjectDetailsEvent{
   final String projectId;

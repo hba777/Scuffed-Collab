@@ -463,6 +463,23 @@ class FirebaseApi {
     }
   }
 
+  /// Removing a team member from a project
+  static Future<void> removeTeamMember(Projects project, TeamMember member) async {
+    try {
+      // Optional: Notify the removed member about their removal
+      await sendPushNotification(
+        member.pushToken!,
+        'Removed from Project: ${project.title}',
+        'You have been removed from the project: ${project.title}.',
+      );
+      // Remove the member document from the project's 'team' sub-collection
+      await firestore.collection('Projects').doc(project.id).collection('team').doc(member.id).delete();
+
+    } catch (e) {
+      log('Error removing team member: $e');
+    }
+  }
+
   /// Creating a task for a project
   static Future<void> addTask(
       String projectId,

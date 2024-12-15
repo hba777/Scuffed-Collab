@@ -27,11 +27,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   List<Projects> projects = [];
 
   FutureOr<void> homeInitialEvent(HomeInitialEvent event, Emitter<HomeState> emit) async {
-    emit(HomeLoadingState());
-    await FirebaseApi.getSelfInfo();
-    // Fetch the projects from Firestore
-    projects = await FirebaseApi.getAllProjects();
-    emit(HomeSuccessState(user: FirebaseApi.me, projects: projects));
+    try {
+      emit(HomeLoadingState());
+      await FirebaseApi.getSelfInfo();
+      // Fetch the projects from Firestore
+      projects = await FirebaseApi.getAllProjects();
+      emit(HomeSuccessState(user: FirebaseApi.me, projects: projects));
+    } catch (e) {
+      // TODO
+      emit(HomeErrorState(error: e.toString()));
+    }
   }
 
   FutureOr<void> homeUpdateActiveStatusEvent(HomeUpdateActiveStatusEvent event, Emitter<HomeState> emit) async {

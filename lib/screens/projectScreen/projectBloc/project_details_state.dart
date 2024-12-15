@@ -33,7 +33,11 @@ class ProjectDetailsAddTaskBtnNavState extends ProjectDetailsActionState {
 // Member Add Screen
 class ProjectDetailsMemberBtnNavState extends ProjectDetailsActionState{}
 
-class ProjectTeamMemberAdded extends ProjectDetailsState {}
+class ProjectTeamMemberAdded extends ProjectDetailsActionState {
+  final String email;
+
+  ProjectTeamMemberAdded({required this.email});
+}
 
 class ProjectMemberAlreadyExistsState extends ProjectDetailsActionState {}
 

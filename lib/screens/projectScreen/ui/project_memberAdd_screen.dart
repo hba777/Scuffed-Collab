@@ -27,7 +27,7 @@ class TeamMemberAddScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is ProjectTeamMemberAdded) {
           // Show success message
-          Dialogs.showSnackBar(context, 'Team Member Added');
+          Dialogs.showSnackBar(context, 'Team member added ${state.email}');
         } else if (state is ProjectTeamMemberNotExistState) {
           Dialogs.showSnackBar(context, 'User Does Not Exist');
         } else if (state is ProjectMemberAlreadyExistsState) {
