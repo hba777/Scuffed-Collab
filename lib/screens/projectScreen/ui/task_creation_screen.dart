@@ -143,7 +143,7 @@ class CreateTaskScreen extends StatelessWidget {
                     fillColor: const Color(0xFF3c3c3c),
                     borderColor: const Color(0xFF1e1e1e),
                     hintColor: Colors.white70,
-                    hintText: 'Task Title',
+                    hintText: 'Task Description',
                     padding: EdgeInsets.symmetric(
                         horizontal: mq.width * .04, vertical: mq.height * .014),
                   ),
